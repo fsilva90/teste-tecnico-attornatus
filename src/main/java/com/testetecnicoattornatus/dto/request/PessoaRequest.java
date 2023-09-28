@@ -23,6 +23,7 @@ public class PessoaRequest {
     @NotNull(message = "O campo nome não deve ser nulo.")
     private String nome;
 
+    @NotNull(message = "O campo dataNascimento não deve ser nulo.")
     @Pattern(regexp = "\\d{2}-\\d{2}-\\d{4}", message = "Data de nascimento inválida")
     @Schema(description = "Data de nascimento", example = "01-01-2023")
     private String dataNascimento;

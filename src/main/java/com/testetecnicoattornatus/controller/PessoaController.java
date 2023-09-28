@@ -40,7 +40,7 @@ public class PessoaController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Cadastra uma nova pessoa.", responses = @ApiResponse(responseCode = "201", description = "Se o cadastro for realizado com sucesso."))
-    public ResponseEntity<PessoaResponse> criarPessoa(@RequestBody PessoaRequest pessoaRequest) {
+    public ResponseEntity<PessoaResponse> criarPessoa(@RequestBody @Valid PessoaRequest pessoaRequest) {
         var newPessoa = this.pessoaService.criarPessoa(pessoaRequest);
         return new ResponseEntity<>(newPessoa, HttpStatus.CREATED);
     }

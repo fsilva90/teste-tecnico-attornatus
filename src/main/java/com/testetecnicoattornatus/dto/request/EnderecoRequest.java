@@ -30,7 +30,6 @@ public class EnderecoRequest {
     @Schema(description = "CEP", example = "11111-111")
     private String cep;
 
-    @NotNull(message = "Número inválido. Por favor, informe um número.")
     @Schema(description = "Número", example = "1")
     private Integer numero;
 
@@ -39,10 +38,8 @@ public class EnderecoRequest {
     private String cidade;
 
     @JsonProperty("principal")
-    @NotNull(message = "O campo principal não pode ser nulo.")
-    @Schema(description = "Identifica o endereço principal da pessoa", example = "true")
+    @Schema(description = "Identifica o endereço principal da pessoa", example = "true", defaultValue = "false")
     private boolean isPrincipal;
-
 
     @NotNull(message = "Id da pessoa inválido. Por favor informe um id da pessoa válido.")
     @Schema(description = "Id da entidade Pessoa", example = "1")

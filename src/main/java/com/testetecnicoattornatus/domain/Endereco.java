@@ -46,7 +46,7 @@ public class Endereco {
     private boolean isPrincipal;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pessoa_id")
+    @JoinColumn(name = "pessoa_id", nullable = false)
     private Pessoa pessoa;
 
 }
