@@ -33,18 +33,6 @@ public class EnderecoService {
     }
 
     /**
-     * Busca uma pessoa pelo ID.
-     *
-     * @param idPessoa O ID da pessoa a ser buscada.
-     * @return A pessoa encontrada.
-     * @throws PessoaInexistenteException Se a pessoa não existir.
-     */
-    private Pessoa buscarPessoaPorId(Long idPessoa) {
-        return this.pessoaService.findOptionalPessoaById(idPessoa)
-                .orElseThrow(() -> new PessoaInexistenteException(String.format(MENSAGEM_PESSOA_INEXISTENTE, idPessoa)));
-    }
-
-    /**
      * Cria um novo endereço e, se necessário, desativa o endereço principal existente.
      *
      * @param enderecoRequest Os dados do novo endereço a ser criado.
@@ -63,13 +51,22 @@ public class EnderecoService {
     }
 
     /**
-     * Desativa o endereço principal existente para uma pessoa.
+     * Atualiza um endereço existente.
      *
-     * @param pessoaExistente A pessoa para a qual o endereço principal será desativado.
+     * @param enderecoRequest Os novos dados do endereço.
+     * @throws EnderecoInexistenteException Se o endereço não existir.
      */
-    private void desativarEnderecoPrincipalExistente(Pessoa pessoaExistente) {
-        List<Endereco> enderecoPrincipalList = this.enderecoRepository.findByPessoaAndPrincipal(pessoaExistente, Boolean.TRUE);
-        enderecoPrincipalList.forEach(endereco -> this.enderecoRepository.updateIsPrincipalById(Boolean.FALSE, endereco.getId()));
+    @Transactional
+    public void atualizarEndereco(EnderecoRequest enderecoRequest) {
+        Endereco enderecoExistente = this.enderecoRepository.findEnderecoById(enderecoRequest.getId())
+                .orElseThrow(() -> new EnderecoInexistenteException(String.format(MENSAGEM_ENDERECO_PRINCIPAL_INEXISTENTE, enderecoRequest.getId())));
+
+        if (enderecoRequest.isPrincipal()) {
+            this.desativarEnderecoPrincipalExistente(enderecoExistente.getPessoa());
+        }
+
+        this.enderecoMapper.atualizarRequestParaEntity(enderecoRequest, enderecoExistente);
+        this.enderecoRepository.save(enderecoExistente);
     }
 
     /**
@@ -105,23 +102,26 @@ public class EnderecoService {
 
         return this.enderecoMapper.converterEntityParaResponse(endereco);
     }
+    
+    /**
+     * Busca uma pessoa pelo ID.
+     *
+     * @param idPessoa O ID da pessoa a ser buscada.
+     * @return A pessoa encontrada.
+     * @throws PessoaInexistenteException Se a pessoa não existir.
+     */
+    private Pessoa buscarPessoaPorId(Long idPessoa) {
+        return this.pessoaService.findOptionalPessoaById(idPessoa)
+                .orElseThrow(() -> new PessoaInexistenteException(String.format(MENSAGEM_PESSOA_INEXISTENTE, idPessoa)));
+    }
 
     /**
-     * Atualiza um endereço existente.
+     * Desativa o endereço principal existente para uma pessoa.
      *
-     * @param enderecoRequest Os novos dados do endereço.
-     * @throws EnderecoInexistenteException Se o endereço não existir.
+     * @param pessoaExistente A pessoa para a qual o endereço principal será desativado.
      */
-    @Transactional
-    public void atualizarEndereco(EnderecoRequest enderecoRequest) {
-        Endereco enderecoExistente = this.enderecoRepository.findEnderecoById(enderecoRequest.getId())
-                .orElseThrow(() -> new EnderecoInexistenteException(String.format(MENSAGEM_ENDERECO_PRINCIPAL_INEXISTENTE, enderecoRequest.getId())));
-
-        if (enderecoRequest.isPrincipal()) {
-            this.desativarEnderecoPrincipalExistente(enderecoExistente.getPessoa());
-        }
-
-        this.enderecoMapper.atualizarRequestParaEntity(enderecoRequest, enderecoExistente);
-        this.enderecoRepository.save(enderecoExistente);
+    private void desativarEnderecoPrincipalExistente(Pessoa pessoaExistente) {
+        List<Endereco> enderecoPrincipalList = this.enderecoRepository.findByPessoaAndPrincipal(pessoaExistente, Boolean.TRUE);
+        enderecoPrincipalList.forEach(endereco -> this.enderecoRepository.updateIsPrincipalById(Boolean.FALSE, endereco.getId()));
     }
 }

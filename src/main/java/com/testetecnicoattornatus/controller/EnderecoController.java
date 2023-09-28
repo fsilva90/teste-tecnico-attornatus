@@ -50,6 +50,19 @@ public class EnderecoController {
         return new ResponseEntity<>(this.enderecoService.criarEndereco(enderecoRequest), HttpStatus.CREATED);
     }
 
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Atualiza o endereço principal da pessoa.", responses = {
+            @ApiResponse(responseCode = "204", description = "Se o id da pessoa e o endereço existirem no banco de dados, e se o endereço pertencer a esta pessoa."),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Se o endereço não existir, ou se a pessoa não for a dona do endereço informado.",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = MensagemErro.class)))
+    })
+    public ResponseEntity<Void> atualizarEndereco(@RequestBody @Valid EnderecoRequest enderecoRequest) {
+        this.enderecoService.atualizarEndereco(enderecoRequest);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping(value = "listar-por-pessoa/{idPessoa}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Busca os endereços de uma pessoa.", responses = {
             @ApiResponse(responseCode = "204", description = "Se o id da pessoa existir no banco de dados."),
@@ -74,17 +87,6 @@ public class EnderecoController {
         return new ResponseEntity<>(this.enderecoService.buscarEnderecoPrincipalPorPessoa(idPessoa), HttpStatus.OK);
     }
 
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Atualiza o endereço principal da pessoa.", responses = {
-            @ApiResponse(responseCode = "204", description = "Se o id da pessoa e o endereço existirem no banco de dados, e se o endereço pertencer a esta pessoa."),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Se o endereço não existir, ou se a pessoa não for a dona do endereço informado.",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = MensagemErro.class)))
-    })
-    public ResponseEntity<Void> atualizarEndereco(@RequestBody @Valid EnderecoRequest enderecoRequest) {
-        this.enderecoService.atualizarEndereco(enderecoRequest);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+
 
 }
