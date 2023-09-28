@@ -30,10 +30,10 @@ public class Endereco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "logradouro", nullable = false)
+    @Column(name = "logradouro")
     private String logradouro;
 
-    @Column(name = "cep", nullable = false, length = 9)
+    @Column(name = "cep", length = 9)
     private String cep;
 
     @Column(name = "numero")
