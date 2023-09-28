@@ -2,11 +2,9 @@ package com.testetecnicoattornatus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.testetecnicoattornatus.dto.request.EnderecoRequest;
-import com.testetecnicoattornatus.dto.request.PessoaRequest;
 import com.testetecnicoattornatus.dto.response.EnderecoResponse;
 import com.testetecnicoattornatus.exception.EnderecoInexistenteException;
 import com.testetecnicoattornatus.exception.PessoaInexistenteException;
-import com.testetecnicoattornatus.factory.EnderecoFactory;
 import com.testetecnicoattornatus.service.EnderecoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
